@@ -2,7 +2,7 @@
 # Secrets are runtime-only: BETTER_AUTH_SECRET, BETTER_AUTH_URL,
 # GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET.
 
-FROM node:24-alpine AS base
+FROM node:25-alpine AS base
 RUN corepack enable
 WORKDIR /app
 
@@ -17,7 +17,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm build
 
-FROM node:24-alpine AS runner
+FROM node:25-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
