@@ -1,0 +1,27 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Sign in
+        2. Open "Duplikate & Aufräumen"
+        3. …
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: gitsorted.eu or self-hosted (which version/commit)? Browser?
+  - type: markdown
+    attributes:
+      value: "⚠️ Security issues: please use [private reporting](https://github.com/danielgtmn/gitsorted/security/advisories/new) instead."
