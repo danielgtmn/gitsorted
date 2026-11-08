@@ -27,6 +27,17 @@ duplicates and forgotten repos, and archive or delete them in bulk.
 
 ## Privacy
 
+gitsorted runs in one of two modes:
+
+|                    | Without database (default) | With stats                        |
+| ------------------ | -------------------------- | --------------------------------- |
+| Enabled by         | no `MONGODB_URL`           | `MONGODB_URL` set                 |
+| Stored server-side | **nothing**                | anonymous totals only (see below) |
+| Landing page       | no stats                   | "cleaned up so far" totals        |
+
+Everything else – sign-in, overview, duplicate detection, bulk actions – works
+identically in both modes.
+
 gitsorted has **no user database**. Your session and GitHub access token live
 only in encrypted, HTTP-only cookies in your browser
 ([Better Auth](https://better-auth.com) stateless mode). Repository data is
