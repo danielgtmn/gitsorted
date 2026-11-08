@@ -2,6 +2,18 @@
   "name": "gitsorted",
   "version": "0.1.0",
   "private": true,
+  "description": "Clean up your GitHub repositories: overview, duplicate detection, bulk archive & delete.",
+  "license": "MIT",
+  "author": "Daniel Gietmann",
+  "homepage": "https://gitsorted.eu",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielgtmn/gitsorted.git"
+  },
+  "bugs": "https://github.com/danielgtmn/gitsorted/issues",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
