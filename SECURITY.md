@@ -19,6 +19,8 @@ supported.
 
 ## Scope notes
 
-- Tokens are stored only in encrypted, HTTP-only cookies; there is no server
-  database.
+- Tokens are stored only in encrypted, HTTP-only cookies; they are never
+  written to a database.
+- The optional stats database holds only anonymous totals and keyed hashes of
+  GitHub user ids (see README → Privacy).
 - All GitHub API calls run server-side; tokens never reach client JavaScript.

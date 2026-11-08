@@ -20,15 +20,23 @@ duplicates and forgotten repos, and archive or delete them in bulk.
 - **Cleanup candidates** – empty repos, nearly empty repos (README only),
   repos uploaded once and never touched again, untouched forks, and repos
   inactive for more than two years.
+- **Public stats** – the landing page shows anonymous totals: repos deleted,
+  storage freed, repos archived and accounts cleaned up (optional, needs MongoDB).
 - **Bulk actions** – archive, unarchive or delete many repos at once. Deleting
   requires typing a confirmation word; failures are reported per repo.
 
 ## Privacy
 
-gitsorted has **no database**. Your session and GitHub access token live only in
-encrypted, HTTP-only cookies in your browser ([Better Auth](https://better-auth.com)
-stateless mode). Repository data is fetched from the GitHub API on demand and
-never stored server-side.
+gitsorted has **no user database**. Your session and GitHub access token live
+only in encrypted, HTTP-only cookies in your browser
+([Better Auth](https://better-auth.com) stateless mode). Repository data is
+fetched from the GitHub API on demand and never stored.
+
+The only thing persisted (if `MONGODB_URL` is set) are **anonymous totals** for
+the landing page: number of repos deleted and archived, and the summed size of
+deleted repos. To count distinct accounts, an HMAC-SHA256 of the GitHub user id
+(keyed with `BETTER_AUTH_SECRET`) is stored – no ids, names, repo names or
+tokens. See [`src/lib/stats.ts`](src/lib/stats.ts).
 
 The app requests the `repo` and `delete_repo` scopes – needed to list private
 repositories, archive and delete them. You can revoke access any time under
@@ -85,6 +93,7 @@ src/components/     UI (repo table, cleanup view, dialogs, chart)
 src/lib/auth.ts     Better Auth config (stateless, GitHub provider)
 src/lib/github.ts   GitHub REST client (server-only)
 src/lib/cleanup.ts  duplicate & cleanup-candidate detection (+ tests)
+src/lib/stats.ts    anonymous totals in MongoDB (optional)
 ```
 
 ## Contributing
