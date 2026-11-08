@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# gitsorted
 
-## Getting Started
+Räum deine GitHub-Repos auf: Mit GitHub anmelden, alle eigenen und Organisations-Repos
+sehen (erstellt, zuletzt aktiv, Größe, Sterne), sortieren, filtern, mögliche Duplikate
+und Aufräum-Kandidaten finden und Repos gesammelt archivieren oder löschen.
 
-First, run the development server:
+## Setup
+
+1. GitHub OAuth App anlegen: <https://github.com/settings/developers> → *New OAuth App*
+   - Homepage URL: `http://localhost:3000`
+   - Authorization callback URL: `http://localhost:3000/api/auth/callback/github`
+2. `cp .env.example .env.local` und Werte eintragen (`BETTER_AUTH_SECRET` via `openssl rand -base64 32`).
+3. `pnpm install` (installiert auch die Git-Hooks) und `pnpm dev`.
+
+## Architektur
+
+- **Auth:** [Better Auth](https://better-auth.com) ohne Datenbank. Session und GitHub-Token
+  liegen verschlüsselt in Cookies; der Server speichert nichts. Scopes: `repo`, `delete_repo`.
+- **Daten:** `src/lib/github.ts` (REST-API, serverseitig), Löschen/Archivieren als Server Actions in `src/app/actions.ts`.
+- **Duplikat-Erkennung:** `src/lib/cleanup.ts` – normalisierte Namen (`-old`, `-v2`, `copy`, Ziffern, Zufallskennungen, Zeitstempel …
+  entfernt) plus Tippfehler-Abstand ≤ 1, gleiche Beschreibungen; Kandidaten: leer, fast leer (≤ 10 KB ohne Code), einmal hochgeladen und nie weiterbearbeitet, unveränderte Forks,
+  > 2 Jahre inaktiv.
+
+## Commits
+
+[Conventional Commits](https://www.conventionalcommits.org) werden per lefthook + commitlint erzwungen
+(`feat: …`, `fix: …`, `chore: …`). Hooks: `commit-msg` (commitlint), `pre-commit` (Biome auf
+gestagten Dateien), `pre-push` (Typecheck + Tests).
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm dev        # Entwicklungsserver
+pnpm lint       # Biome
+pnpm typecheck  # Routen-Typen + tsc
+pnpm test       # Vitest
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
