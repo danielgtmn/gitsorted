@@ -12,6 +12,13 @@ und Aufräum-Kandidaten finden und Repos gesammelt archivieren oder löschen.
 2. `cp .env.example .env.local` und Werte eintragen (`BETTER_AUTH_SECRET` via `openssl rand -base64 32`).
 3. `pnpm install` (installiert auch die Git-Hooks) und `pnpm dev`.
 
+## Deployment
+
+`Dockerfile` baut einen eigenständigen Next.js-Server (Port 3000), z. B. für Coolify.
+Laufzeit-Variablen: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (z. B. `https://gitsorted.eu`),
+`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`. Die GitHub OAuth App braucht die Callback-URL
+`https://gitsorted.eu/api/auth/callback/github`.
+
 ## Architektur
 
 - **Auth:** [Better Auth](https://better-auth.com) ohne Datenbank. Session und GitHub-Token
