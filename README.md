@@ -62,12 +62,19 @@ repositories, archive and delete them. You can revoke access any time under
      cannot be written back to the cookie during page renders).
 2. Set the environment variables (see [`.env.example`](.env.example)):
 
-   | Variable               | Description                                           |
-   | ---------------------- | ----------------------------------------------------- |
-   | `BETTER_AUTH_SECRET`   | random, ≥ 32 chars – `openssl rand -base64 32`        |
-   | `BETTER_AUTH_URL`      | public base URL, e.g. `https://gitsorted.example.com` |
-   | `GITHUB_CLIENT_ID`     | from the OAuth App                                    |
-   | `GITHUB_CLIENT_SECRET` | from the OAuth App                                    |
+   | Variable                                                        | Description                                                                                                      |
+   | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+   | `BETTER_AUTH_SECRET`                                            | random, ≥ 32 chars – `openssl rand -base64 32`                                                                   |
+   | `BETTER_AUTH_URL`                                               | public base URL, e.g. `https://gitsorted.example.com`                                                            |
+   | `GITHUB_CLIENT_ID`                                              | from the OAuth App                                                                                               |
+   | `GITHUB_CLIENT_SECRET`                                          | from the OAuth App                                                                                               |
+   | `MONGODB_URL`                                                   | _optional_ – enables anonymous landing-page stats                                                                |
+   | `LEGAL_NAME`, `LEGAL_ADDRESS`, `LEGAL_EMAIL`                    | _optional_ – enable `/impressum` and `/datenschutz` with your operator details (address lines separated by `\|`) |
+   | `LEGAL_PHONE`, `LEGAL_NOTE`, `LEGAL_HOSTING`, `LEGAL_AUTHORITY` | _optional_ – phone, extra imprint line, hosting provider, data protection authority                              |
+
+   > MongoDB 8.x refuses to start on Linux kernel 6.19+
+   > ([SERVER-121912](https://jira.mongodb.org/browse/SERVER-121912)); use `mongo:7`
+   > on such hosts.
 
 3. Run the Docker image:
 
@@ -105,6 +112,8 @@ src/lib/auth.ts     Better Auth config (stateless, GitHub provider)
 src/lib/github.ts   GitHub REST client (server-only)
 src/lib/cleanup.ts  duplicate & cleanup-candidate detection (+ tests)
 src/lib/stats.ts    anonymous totals in MongoDB (optional)
+src/lib/legal.ts    operator details for imprint & privacy policy (from env)
+src/lib/legal.ts    operator details for imprint & privacy policy (from env)
 ```
 
 ## Contributing

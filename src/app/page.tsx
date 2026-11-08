@@ -1,8 +1,10 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { SignInButton, SignOutButton } from "@/components/auth-buttons";
 import { PublicStats } from "@/components/public-stats";
 import { RepoManager } from "@/components/repo-manager";
 import { GitHubError, listRepos } from "@/lib/github";
+import { getLegalInfo } from "@/lib/legal";
 import { getCurrentUser, getGitHubToken } from "@/lib/session";
 import { statsEnabled } from "@/lib/stats";
 
@@ -140,6 +142,14 @@ function Landing() {
           {statsEnabled()
             ? "Deine Anmeldung liegt nur verschlüsselt in deinem Browser. Wir speichern weder Repo-Namen noch Inhalte – nur anonyme Gesamtzahlen."
             : "Wir speichern nichts auf einem Server. Deine Anmeldung liegt nur verschlüsselt in deinem Browser."}
+          {getLegalInfo() && (
+            <>
+              {" "}
+              <Link href="/datenschutz" className="underline">
+                Mehr zum Datenschutz
+              </Link>
+            </>
+          )}
         </p>
       </main>
     </div>
