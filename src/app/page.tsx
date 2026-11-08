@@ -4,6 +4,7 @@ import { PublicStats } from "@/components/public-stats";
 import { RepoManager } from "@/components/repo-manager";
 import { GitHubError, listRepos } from "@/lib/github";
 import { getCurrentUser, getGitHubToken } from "@/lib/session";
+import { statsEnabled } from "@/lib/stats";
 
 export default function Home() {
   return (
@@ -136,9 +137,9 @@ function Landing() {
           </li>
         </ul>
         <p className="text-xs text-zinc-500">
-          Deine Anmeldung liegt nur verschlüsselt in deinem Browser. Wir
-          speichern weder Repo-Namen noch Inhalte – nur anonyme Gesamtzahlen wie
-          oben.
+          {statsEnabled()
+            ? "Deine Anmeldung liegt nur verschlüsselt in deinem Browser. Wir speichern weder Repo-Namen noch Inhalte – nur anonyme Gesamtzahlen."
+            : "Wir speichern nichts auf einem Server. Deine Anmeldung liegt nur verschlüsselt in deinem Browser."}
         </p>
       </main>
     </div>
