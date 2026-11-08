@@ -22,6 +22,7 @@ GitHub OAuth App for local sign-in (callback
 1. Fork and create a branch from `main` (`feat/…`, `fix/…`, `docs/…`).
 2. Make your change. Add or update tests in `src/**/*.test.ts` for logic changes.
 3. Make sure everything passes:
+
    ```bash
    pnpm lint && pnpm typecheck && pnpm test && pnpm build
    ```

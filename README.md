@@ -43,12 +43,12 @@ repositories, archive and delete them. You can revoke access any time under
      cannot be written back to the cookie during page renders).
 2. Set the environment variables (see [`.env.example`](.env.example)):
 
-   | Variable | Description |
-   | --- | --- |
-   | `BETTER_AUTH_SECRET` | random, ≥ 32 chars – `openssl rand -base64 32` |
-   | `BETTER_AUTH_URL` | public base URL, e.g. `https://gitsorted.example.com` |
-   | `GITHUB_CLIENT_ID` | from the OAuth App |
-   | `GITHUB_CLIENT_SECRET` | from the OAuth App |
+   | Variable               | Description                                           |
+   | ---------------------- | ----------------------------------------------------- |
+   | `BETTER_AUTH_SECRET`   | random, ≥ 32 chars – `openssl rand -base64 32`        |
+   | `BETTER_AUTH_URL`      | public base URL, e.g. `https://gitsorted.example.com` |
+   | `GITHUB_CLIENT_ID`     | from the OAuth App                                    |
+   | `GITHUB_CLIENT_SECRET` | from the OAuth App                                    |
 
 3. Run the Docker image:
 
@@ -70,12 +70,12 @@ pnpm install                 # also installs git hooks
 pnpm dev                     # http://localhost:3000
 ```
 
-| Command | |
-| --- | --- |
-| `pnpm lint` | Biome lint + format check |
-| `pnpm typecheck` | route types + `tsc` |
-| `pnpm test` | Vitest |
-| `pnpm build` | production build |
+| Command          |                           |
+| ---------------- | ------------------------- |
+| `pnpm lint`      | Biome lint + format check |
+| `pnpm typecheck` | route types + `tsc`       |
+| `pnpm test`      | Vitest                    |
+| `pnpm build`     | production build          |
 
 ### Project layout
 
