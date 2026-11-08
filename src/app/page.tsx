@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { SignInButton, SignOutButton } from "@/components/auth-buttons";
+import { PublicStats } from "@/components/public-stats";
 import { RepoManager } from "@/components/repo-manager";
 import { GitHubError, listRepos } from "@/lib/github";
 import { getCurrentUser, getGitHubToken } from "@/lib/session";
@@ -111,6 +112,9 @@ function Landing() {
         <div>
           <SignInButton />
         </div>
+        <Suspense fallback={null}>
+          <PublicStats />
+        </Suspense>
         <ul className="mt-6 grid gap-3 text-sm text-zinc-600 sm:grid-cols-3 dark:text-zinc-400">
           <li className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
             <strong className="block text-zinc-900 dark:text-zinc-100">
@@ -132,8 +136,9 @@ function Landing() {
           </li>
         </ul>
         <p className="text-xs text-zinc-500">
-          Wir speichern nichts auf einem Server. Deine Anmeldung liegt nur
-          verschlüsselt in deinem Browser.
+          Deine Anmeldung liegt nur verschlüsselt in deinem Browser. Wir
+          speichern weder Repo-Namen noch Inhalte – nur anonyme Gesamtzahlen wie
+          oben.
         </p>
       </main>
     </div>

@@ -55,15 +55,16 @@ async function gh(token: string, path: string, init?: RequestInit) {
   return res;
 }
 
-export async function getViewerLogin(token: string): Promise<string> {
+export async function getViewer(
+  token: string,
+): Promise<{ id: number; login: string }> {
   const res = await gh(token, "/user");
-  const user = (await res.json()) as { login: string };
-  return user.login;
+  return (await res.json()) as { id: number; login: string };
 }
 
 /** All repos the user owns or administers via an organisation. */
 export async function listRepos(token: string): Promise<Repo[]> {
-  const login = await getViewerLogin(token);
+  const { login } = await getViewer(token);
   const repos: Repo[] = [];
   for (let page = 1; page <= 50; page++) {
     const res = await gh(
@@ -99,6 +100,20 @@ function toRepo(r: GitHubRepo, login: string): Repo {
     pushedAt: r.pushed_at,
     isOrg: r.owner.login.toLowerCase() !== login.toLowerCase(),
   };
+}
+
+/** Size in KB as reported by GitHub (0 if it can't be read). */
+export async function getRepoSizeKb(
+  token: string,
+  fullName: string,
+): Promise<number> {
+  try {
+    const res = await gh(token, `/repos/${fullName}`);
+    const repo = (await res.json()) as { size?: number };
+    return repo.size ?? 0;
+  } catch {
+    return 0;
+  }
 }
 
 export async function deleteRepo(token: string, fullName: string) {
