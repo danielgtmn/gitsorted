@@ -27,11 +27,11 @@
   "dependencies": {
     "better-auth": "^1.7.18",
     "next": "16.4.5",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react": "19.3.1",
+    "react-dom": "19.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.2",
+    "@biomejs/biome": "2.6.5",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@tailwindcss/turbopack": "^4",
