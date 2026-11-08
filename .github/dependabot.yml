@@ -7,6 +7,9 @@ updates:
     groups:
       dependencies:
         update-types: [minor, patch]
+    ignore:
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
     commit-message:
       prefix: build
       include: scope
@@ -20,5 +23,10 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    ignore:
+      # Stay on Node LTS (24). Node 25+ no longer ships corepack, which the
+      # Dockerfile uses to install pnpm – move to the next LTS deliberately.
+      - dependency-name: node
+        update-types: [version-update:semver-major]
     commit-message:
       prefix: build
