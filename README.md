@@ -1,42 +1,101 @@
 # gitsorted
 
-Räum deine GitHub-Repos auf: Mit GitHub anmelden, alle eigenen und Organisations-Repos
-sehen (erstellt, zuletzt aktiv, Größe, Sterne), sortieren, filtern, mögliche Duplikate
-und Aufräum-Kandidaten finden und Repos gesammelt archivieren oder löschen.
+[![CI](https://github.com/danielgtmn/gitsorted/actions/workflows/ci.yml/badge.svg)](https://github.com/danielgtmn/gitsorted/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## Setup
+**Clean up your GitHub account.** Sign in with GitHub, see all your personal and
+organisation repositories with when they were created and last touched, find
+duplicates and forgotten repos, and archive or delete them in bulk.
 
-1. GitHub OAuth App anlegen: <https://github.com/settings/developers> → *New OAuth App*
-   - Homepage URL: `http://localhost:3000`
-   - Authorization callback URL: `http://localhost:3000/api/auth/callback/github`
-2. `cp .env.example .env.local` und Werte eintragen (`BETTER_AUTH_SECRET` via `openssl rand -base64 32`).
-3. `pnpm install` (installiert auch die Git-Hooks) und `pnpm dev`.
+👉 Live at **[gitsorted.eu](https://gitsorted.eu)** (UI in German).
 
-## Deployment
+## Features
 
-`Dockerfile` baut einen eigenständigen Next.js-Server (Port 3000), z. B. für Coolify.
-Laufzeit-Variablen: `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (z. B. `https://gitsorted.eu`),
-`GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`. Die GitHub OAuth App braucht die Callback-URL
-`https://gitsorted.eu/api/auth/callback/github`.
+- **Overview** – every repo you own or administer: created, last activity, size,
+  stars, visibility, fork/archived/template badges. Sort, search and filter;
+  a "last active per year" chart doubles as a filter.
+- **Duplicate detection** – groups repos whose names only differ by copy markers
+  (`-old`, `-v2`, `copy`, `backup`…), generated IDs (`app-03912df4c6de`),
+  timestamps, a single typo, or that share the same description.
+- **Cleanup candidates** – empty repos, nearly empty repos (README only),
+  repos uploaded once and never touched again, untouched forks, and repos
+  inactive for more than two years.
+- **Bulk actions** – archive, unarchive or delete many repos at once. Deleting
+  requires typing a confirmation word; failures are reported per repo.
 
-## Architektur
+## Privacy
 
-- **Auth:** [Better Auth](https://better-auth.com) ohne Datenbank. Session und GitHub-Token
-  liegen verschlüsselt in Cookies; der Server speichert nichts. Scopes: `repo`, `delete_repo`.
-- **Daten:** `src/lib/github.ts` (REST-API, serverseitig), Löschen/Archivieren als Server Actions in `src/app/actions.ts`.
-- **Duplikat-Erkennung:** `src/lib/cleanup.ts` – normalisierte Namen (`-old`, `-v2`, `copy`, Ziffern, Zufallskennungen, Zeitstempel …
-  entfernt) plus Tippfehler-Abstand ≤ 1, gleiche Beschreibungen; Kandidaten: leer, fast leer (≤ 10 KB ohne Code), einmal hochgeladen und nie weiterbearbeitet, unveränderte Forks,
-  > 2 Jahre inaktiv.
+gitsorted has **no database**. Your session and GitHub access token live only in
+encrypted, HTTP-only cookies in your browser ([Better Auth](https://better-auth.com)
+stateless mode). Repository data is fetched from the GitHub API on demand and
+never stored server-side.
 
-## Commits
+The app requests the `repo` and `delete_repo` scopes – needed to list private
+repositories, archive and delete them. You can revoke access any time under
+[GitHub → Settings → Applications](https://github.com/settings/applications).
 
-[Conventional Commits](https://www.conventionalcommits.org) werden per lefthook + commitlint erzwungen
-(`feat: …`, `fix: …`, `chore: …`). Hooks: `commit-msg` (commitlint), `pre-commit` (Biome auf
-gestagten Dateien), `pre-push` (Typecheck + Tests).
+## Self-hosting
+
+1. Create a GitHub OAuth App at <https://github.com/settings/developers>:
+   - Homepage URL: your URL, e.g. `https://gitsorted.example.com`
+   - Callback URL: `https://gitsorted.example.com/api/auth/callback/github`
+   - Leave **"Expire user access tokens" unchecked** (rotating refresh tokens
+     cannot be written back to the cookie during page renders).
+2. Set the environment variables (see [`.env.example`](.env.example)):
+
+   | Variable | Description |
+   | --- | --- |
+   | `BETTER_AUTH_SECRET` | random, ≥ 32 chars – `openssl rand -base64 32` |
+   | `BETTER_AUTH_URL` | public base URL, e.g. `https://gitsorted.example.com` |
+   | `GITHUB_CLIENT_ID` | from the OAuth App |
+   | `GITHUB_CLIENT_SECRET` | from the OAuth App |
+
+3. Run the Docker image:
+
+   ```bash
+   docker build -t gitsorted .
+   docker run -p 3000:3000 --env-file .env gitsorted
+   ```
+
+   The image is a standalone Next.js server on port 3000 and works as-is on
+   Coolify, Dokku, Fly.io & co. Secrets are only needed at runtime.
+
+## Development
+
+Requires Node.js 24 and pnpm (`corepack enable`).
 
 ```bash
-pnpm dev        # Entwicklungsserver
-pnpm lint       # Biome
-pnpm typecheck  # Routen-Typen + tsc
-pnpm test       # Vitest
+cp .env.example .env.local   # fill in values; callback http://localhost:3000/api/auth/callback/github
+pnpm install                 # also installs git hooks
+pnpm dev                     # http://localhost:3000
 ```
+
+| Command | |
+| --- | --- |
+| `pnpm lint` | Biome lint + format check |
+| `pnpm typecheck` | route types + `tsc` |
+| `pnpm test` | Vitest |
+| `pnpm build` | production build |
+
+### Project layout
+
+```
+src/app/            Next.js App Router – page, server actions, auth route
+src/components/     UI (repo table, cleanup view, dialogs, chart)
+src/lib/auth.ts     Better Auth config (stateless, GitHub provider)
+src/lib/github.ts   GitHub REST client (server-only)
+src/lib/cleanup.ts  duplicate & cleanup-candidate detection (+ tests)
+```
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md).
+Commits follow [Conventional Commits](https://www.conventionalcommits.org),
+enforced by lefthook + commitlint locally and in CI.
+
+Found a security issue? See [SECURITY.md](SECURITY.md) – please don't open a
+public issue.
+
+## License
+
+[MIT](LICENSE) © Daniel Gietmann
